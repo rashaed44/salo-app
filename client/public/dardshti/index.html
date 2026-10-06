@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0e27">
+    <title>دردشتي</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/premium.css">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="authScreen" class="screen active">
+        <div class="auth-bg"></div>
+        <div class="auth-container">
+            <div class="auth-logo">💬</div>
+            <h1 class="auth-title">دردشتي</h1>
+            <p class="auth-subtitle">تواصل مع العالم بأمان وسرعة</p>
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" data-auth="login">دخول</button>
+                <button type="button" class="auth-tab" data-auth="register">حساب جديد</button>
+            </div>
+            <form id="loginForm" class="auth-form active">
+                <div class="input-group"><span class="input-icon">👤</span><input type="text" id="loginUsername" placeholder="اسم المستخدم" autocomplete="username"></div>
+                <div class="input-group"><span class="input-icon">🔒</span><input type="password" id="loginPassword" placeholder="كلمة المرور" autocomplete="current-password"></div>
+                <button type="submit" class="btn-primary btn-lg">تسجيل الدخول</button>
+            </form>
+            <form id="registerForm" class="auth-form">
+                <div class="input-group"><span class="input-icon">👤</span><input type="text" id="regDisplayName" placeholder="الاسم الكامل" autocomplete="name"></div>
+                <div class="input-group"><span class="input-icon">@</span><input type="text" id="regUsername" placeholder="اسم المستخدم" autocomplete="username"></div>
+                <div class="input-group"><span class="input-icon">🔒</span><input type="password" id="regPassword" placeholder="كلمة المرور" autocomplete="new-password"></div>
+                <button type="submit" class="btn-primary btn-lg">إنشاء حساب</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- الشاشة الرئيسية -->
+    <div id="mainScreen" class="screen">
+        <header id="appHeader">
+            <h1 id="headerTitle">دردشتي</h1>
+            <div class="header-actions">
+                <button type="button" id="btnSearch" aria-label="بحث">🔍</button>
+                <button type="button" id="btnNew" aria-label="محادثة جديدة">✏️</button>
+            </div>
+        </header>
+        <div id="searchBar">
+            <input type="text" id="searchIn" placeholder="ابحث..." autocomplete="off">
+            <button type="button" id="closeSearch" aria-label="إغلاق">✕</button>
+        </div>
+
+        <div id="sectionChats" class="section active">
+            <div class="channels-header-main">
+                <h3>🌐 القنوات العامة</h3>
+                <p>انضم لأي قناة وشارك في النقاش</p>
+            </div>
+            <div id="channelsList"></div>
+            <div id="contactsList" style="display:none;"></div>
+        </div>
+
+        <div id="sectionFriends" class="section">
+            <div class="friends-header"><h3>جميع المستخدمين</h3></div>
+            <div id="friendsList"></div>
+        </div>
+
+        <div id="sectionGroups" class="section">
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h3>لا توجد مجموعات</h3>
+                <p>ستظهر مجموعاتك هنا</p>
+            </div>
+        </div>
+
+        <div id="sectionStories" class="section stories-section">
+            <div class="stories-header">
+                <div><h2>الستوري</h2><p>شارك لحظاتك مع أصدقائك لمدة 24 ساعة</p></div>
+                <button type="button" class="story-camera-button" id="openStoryComposer" aria-label="إضافة ستوري">＋</button>
+            </div>
+            <div class="stories-tip"><span>✨</span><div><b>شارك لحظتك</b><small>أضف صورة أو نصاً وسيظهر للأصدقاء الآن</small></div></div>
+            <div class="stories-list" id="storiesList"></div>
+            <div class="stories-empty" id="storiesEmpty"><div>◌</div><h3>لا توجد ستوريات بعد</h3><p>كن أول من يشارك قصة جديدة اليوم</p><button type="button" class="story-primary" id="emptyAddStory">إضافة ستوري</button></div>
+        </div>
+        <div id="storyComposerModal" class="story-modal" aria-hidden="true">
+            <div class="story-composer-card">
+                <div class="story-modal-head"><h3>ستوري جديدة</h3><button type="button" id="closeStoryComposer">×</button></div>
+                <div class="story-preview" id="storyPreview"><span>اكتب شيئاً جميلاً</span></div>
+                <textarea id="storyText" maxlength="280" placeholder="ما الذي تريد مشاركته؟"></textarea>
+                <div class="story-tools"><button type="button" id="storyImageButton">🖼️ إضافة صورة</button><input id="storyImageInput" type="file" accept="image/*" hidden><div class="story-colors" id="storyColors"><button type="button" data-story-color="#075985"></button><button type="button" data-story-color="#7c2d12"></button><button type="button" data-story-color="#14532d"></button><button type="button" data-story-color="#581c87"></button></div></div>
+                <button type="button" class="story-primary full" id="publishStory">نشر الستوري</button>
+            </div>
+        </div>
+        <div id="storyViewerModal" class="story-modal" aria-hidden="true"><div class="story-viewer-card"><div class="story-progress" id="storyProgress"></div><div class="story-viewer-head"><div id="storyViewerUser"></div><button type="button" id="closeStoryViewer">×</button></div><div class="story-viewer-content" id="storyViewerContent"></div><div class="story-viewer-actions"><button type="button" id="storyPrev">‹</button><button type="button" id="storyReact">♡</button><button type="button" id="storyNext">›</button></div></div></div>
+
+        <div id="sectionSettings" class="section settings-section">
+            <div id="settingsHome" class="settings-page active">
+                <div class="settings-hero">
+                    <div class="profile-avatar" id="settingsAvatar">👤</div>
+                    <div class="profile-info">
+                        <h3 id="settingsName">المستخدم</h3>
+                        <p id="settingsUsername">@username</p>
+                        <span class="settings-status">إعداداتك، بالطريقة التي تناسبك</span>
+                    </div>
+                    <button type="button" id="btnEditProfile" class="btn-icon" aria-label="تعديل الملف الشخصي">✏️</button>
+                </div>
+                <div class="settings-page-heading">
+                    <h2>حسابي</h2>
+                    <p>اختر القسم الذي تريد التحكم فيه</p>
+                </div>
+                <div class="settings-categories" id="settingsCategories"></div>
+                <div class="settings-logout" id="btnLogout"><span>🚪</span><b>تسجيل الخروج</b><i>‹</i></div>
+            </div>
+            <div id="settingsDetail" class="settings-page settings-detail-page">
+                <div class="settings-detail-head"><button type="button" id="settingsBack" class="settings-back" aria-label="رجوع">→</button><div><h2 id="settingsDetailTitle">الإعدادات</h2><p id="settingsDetailSubtitle"></p></div></div>
+                <div id="settingsDetailBody" class="settings-detail-body"></div>
+            </div>
+        </div>
+
+        <nav id="bottomNav">
+            <button type="button" class="nav-btn active" data-section="chats"><span class="nav-icon">💬</span><span class="nav-label">المحادثات</span></button>
+            <button type="button" class="nav-btn" data-section="friends"><span class="nav-icon">👥</span><span class="nav-label">الأصدقاء</span></button>
+            <button type="button" class="nav-btn" data-section="groups"><span class="nav-icon">📢</span><span class="nav-label">المجموعات</span></button>
+            <button type="button" class="nav-btn" data-section="stories"><span class="nav-icon">◉</span><span class="nav-label">الستوري</span></button>
+            <button type="button" class="nav-btn" data-section="settings"><span class="nav-icon">⚙️</span><span class="nav-label">الإعدادات</span></button>
+        </nav>
+    </div>
+
+    <!-- شاشة المحادثة -->
+    <div id="chatArea" class="screen">
+        <header id="chatHead">
+            <button type="button" id="btnBack" aria-label="رجوع">←</button>
+            <div class="chat-user-avatar" id="chatAvatar">👤</div>
+            <div id="chatInfo">
+                <span id="hName">المستخدم</span>
+                <small id="hStatus">غير متصل</small>
+            </div>
+            <div class="chat-actions">
+                <button type="button" id="btnCall" aria-label="اتصال">📞</button>
+                <button type="button" id="btnVideoCall" aria-label="فيديو">📹</button>
+                <button type="button" id="btnMenu" aria-label="المزيد">⋮</button>
+            </div>
+        </header>
+        <div id="msgs"></div>
+        <div id="typingBar">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <small>يكتب الآن...</small>
+        </div>
+        <div id="replyBar">
+            <div class="reply-content">
+                <small>الرد على</small>
+                <p id="replyText"></p>
+            </div>
+            <button type="button" id="replyClose" aria-label="إلغاء">✕</button>
+        </div>
+        <div id="inputBar">
+            <button type="button" id="btnAttach" aria-label="إرفاق">📎</button>
+            <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
+            <button type="button" id="btnEmoji" aria-label="إيموجي">😊</button>
+            <button type="button" id="btnSend" aria-label="إرسال">➤</button>
+        </div>
+        <div id="emojiPanel"><div class="emoji-grid"></div></div>
+        <input type="file" id="chatImageInput" accept="image/*" style="display:none;">
+    </div>
+
+    <!-- نوافذ -->
+    <div id="newModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>محادثة جديدة</h3>
+                <button type="button" id="closeNew" aria-label="إغلاق">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newName" placeholder="ابحث عن مستخدم..." autocomplete="off">
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editProfileModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>تعديل الملف الشخصي</h3>
+                <button type="button" id="closeEditProfile" aria-label="إغلاق">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-edit">
+                    <div class="avatar-preview" id="editAvatar">👤</div>
+                </div>
+                <input type="text" id="editName" placeholder="الاسم الكامل">
+                <input type="text" id="editStatus" placeholder="الحالة">
+                <button type="button" id="saveProfileBtn" class="btn-primary btn-lg">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل الرسالة -->
+    <div id="editMessageModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>تعديل الرسالة</h3>
+                <button type="button" id="closeEditMessage" aria-label="إغلاق">✕</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="editMessageText" maxlength="5000"></textarea>
+                <div class="edit-modal-actions">
+                    <button type="button" class="btn-cancel" id="cancelEditMessage">إلغاء</button>
+                    <button type="button" class="btn-save" id="saveEditMessage">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <button type="button" id="closeLb" aria-label="إغلاق">✕</button>
+        <img id="lbImg" alt="صورة">
+    </div>
+
+</div>
+
+<script>window.DARDSHTI_API_BASE = '';</script>
+<script src="js/backend-client.js"></script>
+<script src="js/app.js"></script>
+    <script src="js/stories.js"></script>
+    <script src="js/chat-features.js"></script>
+    <script src="js/channels.js"></script>
+    <script src="js/cases.js"></script>
+    <script src="js/akish.js"></script>
+    <script src="js/souq.js"></script>
+    <script src="js/souq-admin.js"></script>
+    <script src="js/enhancements.js"></script>
+    <script src="js/shared-content.js"></script>
+</body>
+</html>
