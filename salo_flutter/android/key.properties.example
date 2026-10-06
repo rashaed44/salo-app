@@ -1,0 +1,6 @@
+# Copy this file to key.properties and replace the placeholders.
+# Never commit key.properties or the .jks file to source control.
+storePassword=YOUR_RELEASE_KEYSTORE_PASSWORD
+keyPassword=YOUR_RELEASE_KEYSTORE_PASSWORD
+keyAlias=salo_release
+storeFile=salo-production-release.jks
