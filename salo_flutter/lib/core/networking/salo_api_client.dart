@@ -10,7 +10,7 @@ class SaloApiClient {
               baseUrl ??
               const String.fromEnvironment(
                 'SALO_API_BASE_URL',
-                defaultValue: 'http://10.0.2.2:3000',
+                defaultValue: 'https://salo-app.onrender.com',
               ),
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 20),
