@@ -500,7 +500,8 @@ export function registerLegacyApi(app: Express) {
         userId: session.user.id,
         lastSeenAt: new Date(),
       })
-      .onDuplicateKeyUpdate({
+      .onConflictDoUpdate({
+        target: userPresence.sessionToken,
         set: { userId: session.user.id, lastSeenAt: new Date() },
       });
     return res.json({ ok: true, time: new Date().toISOString() });
@@ -538,7 +539,10 @@ export function registerLegacyApi(app: Express) {
     await db
       .insert(channelMemberships)
       .values({ channelId, userId: session.user.id })
-      .onDuplicateKeyUpdate({ set: { userId: session.user.id } });
+      .onConflictDoUpdate({
+        target: [channelMemberships.channelId, channelMemberships.userId],
+        set: { userId: session.user.id },
+      });
     return res.json({ joined: true });
   });
 
@@ -572,7 +576,8 @@ export function registerLegacyApi(app: Express) {
     await db!
       .insert(appStates)
       .values({ userId: session.user.id, stateJson: parsed.json })
-      .onDuplicateKeyUpdate({
+      .onConflictDoUpdate({
+        target: appStates.userId,
         set: { stateJson: parsed.json, updatedAt: new Date() },
       });
     return res.json({ ok: true });
