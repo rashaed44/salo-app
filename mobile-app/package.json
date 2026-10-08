@@ -1,0 +1,20 @@
+{
+  "name": "dardshti",
+  "version": "1.4.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node scripts/check-project.js",
+    "test": "npm run check",
+    "android:debug": "npx cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  }
+}

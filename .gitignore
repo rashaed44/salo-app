@@ -5,6 +5,10 @@
 # Build outputs
 dist/
 build/
+**/.gradle/
+**/local.properties
+**/*.apk
+**/*.aab
 *.dist
 
 # Environment variables
