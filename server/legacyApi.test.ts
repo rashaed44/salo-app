@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { hashPassword, isAllowedChannelId, normalizeUsername, parseJson, parsePayload, parseState, verifyPassword } from "./legacyApi";
+import {
+  hashPassword,
+  isAllowedChannelId,
+  isAllowedContentKind,
+  isAllowedOrigin,
+  normalizeUsername,
+  parseJson,
+  parsePayload,
+  parseState,
+  verifyPassword,
+} from "./legacyApi";
 
 describe("legacy backend security helpers", () => {
   it("normalizes usernames consistently", () => {
@@ -14,10 +24,19 @@ describe("legacy backend security helpers", () => {
     expect(isAllowedChannelId("general; DROP TABLE messages")).toBe(false);
   });
 
+  it("rejects arbitrary origins and content kinds", () => {
+    expect(isAllowedOrigin("https://salo-app.onrender.com")).toBe(true);
+    expect(isAllowedOrigin("https://evil.example")).toBe(false);
+    expect(isAllowedContentKind("story")).toBe(true);
+    expect(isAllowedContentKind("unknown_kind")).toBe(false);
+  });
+
   it("hashes passwords and rejects wrong credentials", async () => {
     const stored = await hashPassword("correct horse battery staple");
     expect(stored).toMatch(/^scrypt\$/);
-    await expect(verifyPassword("correct horse battery staple", stored)).resolves.toBe(true);
+    await expect(
+      verifyPassword("correct horse battery staple", stored)
+    ).resolves.toBe(true);
     await expect(verifyPassword("wrong password", stored)).resolves.toBe(false);
   });
 
@@ -29,7 +48,10 @@ describe("legacy backend security helpers", () => {
   });
 
   it("accepts bounded feature payloads and safely parses stored JSON", () => {
-    expect(parsePayload({ kind: "post", text: "hello" })?.value).toEqual({ kind: "post", text: "hello" });
+    expect(parsePayload({ kind: "post", text: "hello" })?.value).toEqual({
+      kind: "post",
+      text: "hello",
+    });
     expect(parsePayload(null)).toBeNull();
     expect(parsePayload({ huge: "x".repeat(1_000_001) })).toBeNull();
     expect(parseJson('{"ok":true}')).toEqual({ ok: true });
